@@ -1,15 +1,22 @@
+@import 'tailwindcss';
+
+/*
+ * Chart colours
+ */
 :root {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  color: #10233c;
-  background: #f6f8fb;
+  --surface-1: #fcfcfb;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --grid-line: #e8e7e3;
+  --series-1: #2a78d6;
 }
 
-body {
-  margin: 0;
-}
-
-main {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 2.5rem 1.5rem;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface-1: #1a1a19;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --grid-line: #2f2f2d;
+    --series-1: #3987e5;
+  }
 }
