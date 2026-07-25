@@ -16,7 +16,7 @@ server:
   port: 8080
 
 treasury:
-  base-url: https://api.fiscaldata.treasury.gov/services/api/fiscal_service
+  base-url: https://home.treasury.gov/resource-center/data-chart-center/interest-rates
 
 management:
   endpoints:
