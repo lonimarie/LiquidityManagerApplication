@@ -9,6 +9,7 @@
   --text-secondary: #52514e;
   --grid-line: #e8e7e3;
   --series-1: #2a78d6;
+  --series-1-hover: #256abf;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -18,5 +19,7 @@
     --text-secondary: #c3c2b7;
     --grid-line: #2f2f2d;
     --series-1: #3987e5;
+    /* On a dark surface the hover step goes lighter, not darker. */
+    --series-1-hover: #5598e7;
   }
 }

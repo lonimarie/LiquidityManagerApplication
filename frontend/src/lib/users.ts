@@ -1,5 +1,5 @@
 /**
- * Seeded demo users. This is NOT authentication
+ * Seeded demo users. This is NOT authenticated
  */
 export interface DemoUser {
   id: string;

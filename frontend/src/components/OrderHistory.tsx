@@ -78,7 +78,7 @@ export default function OrderHistory({ page, onPageChange }: Props) {
               onClick={() => onPageChange(page.page - 1)}
               disabled={!hasPrevious}
               aria-label="Previous page"
-              className="rounded-md border border-[var(--grid-line)] px-3 py-1.5 text-sm text-[var(--text-primary)] disabled:opacity-40"
+              className="rounded-md border border-[var(--grid-line)] px-3 py-1.5 text-sm text-[var(--text-primary)] transition-colors enabled:cursor-pointer enabled:hover:bg-[var(--grid-line)] disabled:cursor-not-allowed disabled:opacity-40"
             >
               ‹ Previous
             </button>
@@ -90,7 +90,7 @@ export default function OrderHistory({ page, onPageChange }: Props) {
               onClick={() => onPageChange(page.page + 1)}
               disabled={!hasNext}
               aria-label="Next page"
-              className="rounded-md border border-[var(--grid-line)] px-3 py-1.5 text-sm text-[var(--text-primary)] disabled:opacity-40"
+              className="rounded-md border border-[var(--grid-line)] px-3 py-1.5 text-sm text-[var(--text-primary)] transition-colors enabled:cursor-pointer enabled:hover:bg-[var(--grid-line)] disabled:cursor-not-allowed disabled:opacity-40"
             >
               Next ›
             </button>
