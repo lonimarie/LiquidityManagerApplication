@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
 import { fetchYieldCurve } from './api/yieldCurve';
-import type { YieldCurve } from './api/types';
+import { fetchOrders } from './api/orders';
+import type { OrderPage, YieldCurve } from './api/types';
 import YieldCurveChart from './components/YieldCurveChart';
 import YieldTable from './components/YieldTable';
+import OrderForm from './components/OrderForm';
+import OrderHistory from './components/OrderHistory';
+import UserPicker from './components/UserPicker';
+import { loadUserId, saveUserId } from './lib/users';
 
 function formatDate(isoDate: string): string {
-  // Parse as local time
   const [year, month, day] = isoDate.split('-').map(Number);
   return new Date(year, month - 1, day).toLocaleDateString('en-US', {
     month: 'long',
@@ -19,6 +23,10 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [userId, setUserId] = useState(loadUserId);
+  const [orderPage, setOrderPage] = useState<OrderPage | null>(null);
+  const [page, setPage] = useState(0);
+
   const load = useCallback(() => {
     setLoading(true);
     setError(null);
@@ -30,15 +38,40 @@ export default function App() {
 
   useEffect(load, [load]);
 
+  const loadOrders = useCallback(() => {
+    fetchOrders(userId, page)
+      .then(setOrderPage)
+      .catch(() => setOrderPage(null));
+  }, [userId, page]);
+
+  useEffect(loadOrders, [loadOrders]);
+
+  function handleUserChange(next: string) {
+    setUserId(next);
+    saveUserId(next);
+    setPage(0);
+  }
+
+  function handlePlaced() {
+    if (page === 0) {
+      loadOrders();
+    } else {
+      setPage(0);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[var(--surface-1)]">
       <main className="mx-auto max-w-4xl px-6 py-10">
-        <header className="mb-8">
-          <h1 className="text-2xl font-semibold text-[var(--text-primary)]">Liquidity Manager</h1>
-          <p className="mt-1 text-sm text-[var(--text-secondary)]">
-            US Treasury par yield curve
-            {curve && ` — as of ${formatDate(curve.date)}`}
-          </p>
+        <header className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-[var(--text-primary)]">Liquidity Manager</h1>
+            <p className="mt-1 text-sm text-[var(--text-secondary)]">
+              US Treasury par yield curve
+              {curve && ` — as of ${formatDate(curve.date)}`}
+            </p>
+          </div>
+          <UserPicker userId={userId} onChange={handleUserChange} />
         </header>
 
         {loading && (
@@ -59,9 +92,21 @@ export default function App() {
         )}
 
         {curve && !loading && !error && (
-          <div className="space-y-8">
+          <div className="space-y-10">
             <YieldCurveChart points={curve.points} />
-            <YieldTable points={curve.points} />
+            <OrderForm
+              key={userId}
+              userId={userId}
+              points={curve.points}
+              onPlaced={handlePlaced}
+            />
+            {orderPage && <OrderHistory page={orderPage} onPageChange={setPage} />}
+            <div>
+              <h2 className="mb-3 text-sm font-semibold text-[var(--text-primary)]">
+                All published rates
+              </h2>
+              <YieldTable points={curve.points} />
+            </div>
           </div>
         )}
       </main>
