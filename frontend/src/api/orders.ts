@@ -1,7 +1,5 @@
 import type { ApiError, Order, OrderPage, OrderRequest } from './types';
 
-export const PAGE_SIZE = 5;
-
 /**
  * Thrown for a rejected request, carrying the per-field messages the backend supplies so the
  * form can show them inline.
@@ -32,8 +30,7 @@ async function toOrderError(response: Response): Promise<OrderError> {
 }
 
 export async function fetchOrders(userId: string, page = 0): Promise<OrderPage> {
-  const query = new URLSearchParams({ page: String(page), size: String(PAGE_SIZE) });
-  const response = await fetch(`/api/orders?${query}`, { headers: headers(userId) });
+  const response = await fetch(`/api/orders?page=${page}`, { headers: headers(userId) });
 
   if (!response.ok) {
     throw await toOrderError(response);

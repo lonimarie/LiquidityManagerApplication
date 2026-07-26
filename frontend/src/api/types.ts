@@ -1,6 +1,5 @@
 export interface YieldPoint {
   label: string;
-  months: number;
   ratePercent: number;
 }
 
@@ -12,7 +11,6 @@ export interface YieldCurve {
 export interface Order {
   id: number;
   termLabel: string;
-  termMonths: number;
   amount: number;
   ratePercent: number;
   createdAt: string;

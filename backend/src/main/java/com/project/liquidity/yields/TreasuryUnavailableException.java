@@ -1,9 +1,7 @@
 package com.project.liquidity.yields;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+/** Status is mapped in ApiExceptionHandler, which owns the response body too. */
 public class TreasuryUnavailableException extends RuntimeException {
 
     public TreasuryUnavailableException(String message, Throwable cause) {

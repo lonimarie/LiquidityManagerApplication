@@ -39,6 +39,7 @@ interface Props {
 
 export default function OrderModal({ open, onClose, userId, points, onPlaced }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const amountRef = useRef<HTMLInputElement>(null);
 
   const [termLabel, setTermLabel] = useState(points[0]?.label ?? '');
   const [amount, setAmount] = useState('');
@@ -52,13 +53,13 @@ export default function OrderModal({ open, onClose, userId, points, onPlaced }: 
       return;
     }
     if (open && !dialog.open) {
+      amountRef.current?.setAttribute('autofocus', '');
       dialog.showModal();
     } else if (!open && dialog.open) {
       dialog.close();
     }
   }, [open]);
 
-  // Start from a clean form each time it opens, including after switching user.
   useEffect(() => {
     if (open) {
       setTermLabel(points[0]?.label ?? '');
@@ -146,11 +147,11 @@ export default function OrderModal({ open, onClose, userId, points, onPlaced }: 
             </label>
             <input
               id="amount"
+              ref={amountRef}
               type="number"
               inputMode="decimal"
               placeholder="1,000,000.00"
               value={amount}
-              autoFocus
               onChange={(event) => {
                 setAmount(event.target.value);
                 if (amountError) {
@@ -191,7 +192,7 @@ export default function OrderModal({ open, onClose, userId, points, onPlaced }: 
             <button
               type="submit"
               disabled={submitting}
-              className="rounded-md bg-[var(--series-1)] px-4 py-2 text-sm font-medium text-white transition-colors enabled:cursor-pointer enabled:hover:bg-[var(--series-1-hover)] disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-md bg-[var(--action)] px-4 py-2 text-sm font-medium text-[var(--action-text)] transition-colors enabled:cursor-pointer enabled:hover:bg-[var(--action-hover)] disabled:cursor-not-allowed disabled:opacity-40"
             >
               {submitting ? 'Placing…' : 'Place order'}
             </button>

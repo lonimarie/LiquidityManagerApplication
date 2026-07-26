@@ -28,7 +28,7 @@ class YieldCurveControllerTest {
     private void stubCurve(int year) {
         when(treasury.fetchCurve(anyInt())).thenReturn(new YieldCurve(
                 LocalDate.of(year, 12, 31),
-                List.of(new YieldPoint("10 Yr", new BigDecimal("120"), new BigDecimal("0.93")))));
+                List.of(new YieldPoint("10 Yr", new BigDecimal("0.93")))));
     }
 
     @Test

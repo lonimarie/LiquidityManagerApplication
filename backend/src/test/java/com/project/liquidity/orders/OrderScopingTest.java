@@ -44,7 +44,7 @@ class OrderScopingTest {
         orders.deleteAll();
         when(treasury.fetchLatestCurve()).thenReturn(new YieldCurve(
                 LocalDate.of(2026, 7, 24),
-                List.of(new YieldPoint("10 Yr", new BigDecimal("120"), new BigDecimal("4.69")))));
+                List.of(new YieldPoint("10 Yr", new BigDecimal("4.69")))));
     }
 
     private void placeOrderAs(String userId, String amount) throws Exception {

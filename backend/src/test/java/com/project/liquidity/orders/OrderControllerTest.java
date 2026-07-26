@@ -33,8 +33,8 @@ class OrderControllerTest {
     @Test
     void returns201AndTheCreatedOrder() throws Exception {
         when(orderService.place(any())).thenReturn(new OrderResponse(
-                1L, "10 Yr", new BigDecimal("120"), new BigDecimal("5000000.00"),
-                new BigDecimal("4.69"), Instant.parse("2026-07-25T14:40:42Z")));
+                1L, "10 Yr", new BigDecimal("5000000.00"), new BigDecimal("4.69"),
+                Instant.parse("2026-07-25T14:40:42Z")));
 
         mockMvc.perform(post("/api/orders")
                         .contentType(MediaType.APPLICATION_JSON)

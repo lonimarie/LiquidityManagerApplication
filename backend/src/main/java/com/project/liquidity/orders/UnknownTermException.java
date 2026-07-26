@@ -1,9 +1,7 @@
 package com.project.liquidity.orders;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
+/** Status is mapped in ApiExceptionHandler, which owns the response body too. */
 public class UnknownTermException extends RuntimeException {
 
     public UnknownTermException(String termLabel) {

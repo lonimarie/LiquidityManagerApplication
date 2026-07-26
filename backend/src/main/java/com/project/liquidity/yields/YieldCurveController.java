@@ -18,7 +18,7 @@ public class YieldCurveController {
 
     /**
      * @param year optional; defaults to the current year. A past year returns that year's
-     *             closing curve, which is how the UI shows historical comparisons.
+     * closing curve, which is how the UI shows historical comparisons.
      */
     @GetMapping("/yield-curve")
     public YieldCurve latestYieldCurve(@RequestParam(required = false) Integer year) {

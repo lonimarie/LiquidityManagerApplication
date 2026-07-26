@@ -17,14 +17,11 @@ export default function OrderHistory({ page, onPageChange }: Props) {
 
   return (
     <section>
-      <div className="mb-3 flex items-baseline justify-between gap-4">
-        <h2 className="text-sm font-semibold text-[var(--text-primary)]">Order history</h2>
-        {totalOrders > 0 && (
-          <p className="text-xs tabular-nums text-[var(--text-secondary)]">
-            Showing {firstRow}–{lastRow} of {totalOrders}
-          </p>
-        )}
-      </div>
+      {totalOrders > 0 && orders.length > 0 && (
+        <p className="mb-3 text-right text-xs tabular-nums text-[var(--text-secondary)]">
+          Showing {firstRow}–{lastRow} of {totalOrders}
+        </p>
+      )}
 
       {totalOrders === 0 ? (
         <p className="text-sm text-[var(--text-secondary)]">

@@ -1,5 +1,5 @@
 /** Treasury's daily curve series begins in 1990; mirrors TreasuryYieldClient.EARLIEST_YEAR. */
-const EARLIEST_YEAR = 1990;
+export const EARLIEST_YEAR = 1990;
 
 export const CURRENT_YEAR = new Date().getFullYear();
 

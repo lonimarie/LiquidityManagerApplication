@@ -12,7 +12,7 @@ export default function PlaceOrderButton({ disabled, disabledReason, onClick }: 
         onClick={onClick}
         disabled={disabled}
         aria-describedby={disabled ? 'place-order-disabled-reason' : undefined}
-        className="rounded-md bg-[var(--series-1)] px-4 py-2 text-sm font-medium text-white transition-colors enabled:cursor-pointer enabled:hover:bg-[var(--series-1-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--series-1)] disabled:cursor-not-allowed disabled:opacity-40"
+        className="rounded-md bg-[var(--action)] px-4 py-2 text-sm font-medium text-[var(--action-text)] transition-colors enabled:cursor-pointer enabled:hover:bg-[var(--action-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--action)] disabled:cursor-not-allowed disabled:opacity-40"
       >
         Place order
       </button>

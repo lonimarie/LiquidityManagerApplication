@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +20,6 @@ public class YieldCurveCsvParser {
 
     private static final Pattern TENOR = Pattern.compile("(\\d+(?:\\.\\d+)?)\\s*(Mo|Month|Yr|Year)s?",
             Pattern.CASE_INSENSITIVE);
-
-    private static final BigDecimal MONTHS_PER_YEAR = BigDecimal.valueOf(12);
 
     /**
      * @return the most recent curve in the file, or empty if it contains no data rows
@@ -43,11 +40,11 @@ public class YieldCurveCsvParser {
         List<YieldPoint> points = new ArrayList<>();
 
         for (int i = 1; i < headers.length && i < values.length; i++) {
-            BigDecimal months = tenorInMonths(headers[i]).orElse(null);
-            if (months == null || values[i].isEmpty()) {
+            // Skip columns that aren't tenors, and tenors not published that day.
+            if (!isTenor(headers[i]) || values[i].isEmpty()) {
                 continue;
             }
-            points.add(new YieldPoint(headers[i], months, new BigDecimal(values[i])));
+            points.add(new YieldPoint(headers[i], new BigDecimal(values[i])));
         }
 
         if (points.isEmpty()) {
@@ -57,15 +54,8 @@ public class YieldCurveCsvParser {
         return Optional.of(new YieldCurve(LocalDate.parse(values[0], DATE_FORMAT), points));
     }
 
-    private static Optional<BigDecimal> tenorInMonths(String header) {
-        Matcher matcher = TENOR.matcher(header);
-        if (!matcher.matches()) {
-            return Optional.empty();
-        }
-
-        BigDecimal amount = new BigDecimal(matcher.group(1));
-        boolean isYears = matcher.group(2).toLowerCase().startsWith("y");
-        return Optional.of(isYears ? amount.multiply(MONTHS_PER_YEAR) : amount);
+    private static boolean isTenor(String header) {
+        return TENOR.matcher(header).matches();
     }
 
     private static String[] splitRow(String line) {

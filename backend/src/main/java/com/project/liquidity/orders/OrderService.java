@@ -37,7 +37,6 @@ public class OrderService {
         Order saved = orders.save(new Order(
                 currentUser.id(),
                 point.label(),
-                point.months(),
                 request.amount(),
                 point.ratePercent()));
 

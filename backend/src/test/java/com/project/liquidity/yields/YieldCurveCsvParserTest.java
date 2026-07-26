@@ -25,14 +25,13 @@ class YieldCurveCsvParserTest {
         assertThat(curve.date()).isEqualTo(LocalDate.of(2026, 7, 24));
         assertThat(curve.points()).extracting(YieldPoint::label)
                 .containsExactly("1 Mo", "6 Mo", "1 Yr", "10 Yr", "30 Yr");
-        assertThat(curve.points()).extracting(YieldPoint::months)
+        assertThat(curve.points()).extracting(YieldPoint::ratePercent)
                 .containsExactly(
-                        new BigDecimal("1"),
-                        new BigDecimal("6"),
-                        new BigDecimal("12"),
-                        new BigDecimal("120"),
-                        new BigDecimal("360"));
-        assertThat(curve.points().get(0).ratePercent()).isEqualTo(new BigDecimal("3.80"));
+                        new BigDecimal("3.80"),
+                        new BigDecimal("4.08"),
+                        new BigDecimal("4.14"),
+                        new BigDecimal("4.69"),
+                        new BigDecimal("5.16"));
     }
 
     @Test
@@ -44,9 +43,10 @@ class YieldCurveCsvParserTest {
 
         YieldCurve curve = parser.parseLatest(csv).orElseThrow();
 
+        // The odd column is recognised as a tenor rather than skipped.
         assertThat(curve.points()).extracting(YieldPoint::label)
-                .contains("1.5 Month");
-        assertThat(curve.points().get(1).months()).isEqualTo(new BigDecimal("1.5"));
+                .containsExactly("1 Mo", "1.5 Month", "2 Mo");
+        assertThat(curve.points().get(1).ratePercent()).isEqualTo(new BigDecimal("3.88"));
     }
 
     @Test

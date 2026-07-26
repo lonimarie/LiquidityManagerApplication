@@ -47,12 +47,12 @@ class OrderServiceTest {
         when(treasury.fetchLatestCurve()).thenReturn(new YieldCurve(
                 LocalDate.of(2026, 7, 24),
                 List.of(
-                        new YieldPoint("1 Mo", new BigDecimal("1"), new BigDecimal("3.80")),
-                        new YieldPoint("10 Yr", new BigDecimal("120"), new BigDecimal("4.69")))));
+                        new YieldPoint("1 Mo", new BigDecimal("3.80")),
+                        new YieldPoint("10 Yr", new BigDecimal("4.69")))));
     }
 
     @Test
-    void snapshotsRateAndTenorFromTheCurve() {
+    void snapshotsRateAndTermFromTheCurve() {
         stubCurve();
         when(currentUser.id()).thenReturn("loni");
         when(orders.save(any(Order.class))).thenAnswer(call -> call.getArgument(0));
@@ -62,10 +62,10 @@ class OrderServiceTest {
         ArgumentCaptor<Order> saved = ArgumentCaptor.forClass(Order.class);
         verify(orders).save(saved.capture());
 
-        // The rate is taken from the curve, not from the request. Scales are normalised to the
-        // column definitions so a POST response matches what a later GET reads back.
+        // The rate and term are taken from the curve, not from the request. Scales are
+        // normalised so a POST response matches what a later GET reads back.
         assertThat(saved.getValue().getRatePercent()).isEqualTo(new BigDecimal("4.69"));
-        assertThat(saved.getValue().getTermMonths()).isEqualTo(new BigDecimal("120.0"));
+        assertThat(saved.getValue().getTermLabel()).isEqualTo("10 Yr");
         assertThat(saved.getValue().getAmount()).isEqualTo(new BigDecimal("5000000.00"));
     }
 

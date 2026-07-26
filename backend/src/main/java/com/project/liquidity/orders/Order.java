@@ -29,9 +29,6 @@ public class Order {
     @Column(nullable = false)
     private String termLabel;
 
-    @Column(nullable = false, precision = 8, scale = 1)
-    private BigDecimal termMonths;
-
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal amount;
 
@@ -45,11 +42,9 @@ public class Order {
         // Required by JPA.
     }
 
-    public Order(String userId, String termLabel, BigDecimal termMonths, BigDecimal amount,
-            BigDecimal ratePercent) {
+    public Order(String userId, String termLabel, BigDecimal amount, BigDecimal ratePercent) {
         this.userId = userId;
         this.termLabel = termLabel;
-        this.termMonths = termMonths.setScale(1, RoundingMode.HALF_UP);
         this.ratePercent = ratePercent.setScale(2, RoundingMode.HALF_UP);
         this.amount = amount.setScale(2, RoundingMode.UNNECESSARY);
     }
@@ -69,10 +64,6 @@ public class Order {
 
     public String getTermLabel() {
         return termLabel;
-    }
-
-    public BigDecimal getTermMonths() {
-        return termMonths;
     }
 
     public BigDecimal getAmount() {

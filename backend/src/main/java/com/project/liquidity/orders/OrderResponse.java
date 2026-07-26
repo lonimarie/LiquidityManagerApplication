@@ -9,7 +9,6 @@ import java.time.Instant;
 public record OrderResponse(
         Long id,
         String termLabel,
-        BigDecimal termMonths,
         BigDecimal amount,
         BigDecimal ratePercent,
         Instant createdAt) {
@@ -18,7 +17,6 @@ public record OrderResponse(
         return new OrderResponse(
                 order.getId(),
                 order.getTermLabel(),
-                order.getTermMonths(),
                 order.getAmount(),
                 order.getRatePercent(),
                 order.getCreatedAt());

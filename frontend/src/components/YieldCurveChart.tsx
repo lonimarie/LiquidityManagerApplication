@@ -43,7 +43,6 @@ export default function YieldCurveChart({ points }: Props) {
             stroke="var(--grid-line)"
             interval="preserveStartEnd"
           />
-          {/* Ticks carry the unit, so no rotated axis label is needed. */}
           <YAxis
             domain={yDomain(points)}
             tickFormatter={(value: number) => `${value.toFixed(1)}%`}

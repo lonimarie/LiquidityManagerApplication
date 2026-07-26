@@ -12,7 +12,7 @@ export default function UserPicker({ userId, onChange }: Props) {
         htmlFor="user-picker"
         className="text-xs font-medium text-[var(--text-secondary)]"
       >
-        Demo user — no authentication
+        Demo user
       </label>
       <select
         id="user-picker"

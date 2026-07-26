@@ -45,10 +45,6 @@ public class TreasuryYieldClient {
         return fetchCurve(LocalDate.now().getYear());
     }
 
-    /**
-     * The last curve published in the given year -- the newest row in a past year's file is its
-     * final business day, so this is that year's closing curve.
-     */
     public YieldCurve fetchCurve(int year) {
         int currentYear = LocalDate.now().getYear();
         int safeYear = Math.clamp(year, EARLIEST_YEAR, currentYear);
