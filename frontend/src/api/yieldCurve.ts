@@ -1,7 +1,8 @@
 import type { YieldCurve } from './types';
 
-export async function fetchYieldCurve(): Promise<YieldCurve> {
-  const response = await fetch('/api/yield-curve');
+export async function fetchYieldCurve(year?: number): Promise<YieldCurve> {
+  const url = year === undefined ? '/api/yield-curve' : `/api/yield-curve?year=${year}`;
+  const response = await fetch(url);
 
   if (!response.ok) {
     throw new Error(

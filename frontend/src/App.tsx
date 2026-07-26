@@ -7,6 +7,7 @@ import YieldTable from './components/YieldTable';
 import OrderForm from './components/OrderForm';
 import OrderHistory from './components/OrderHistory';
 import UserPicker from './components/UserPicker';
+import YearPicker, { CURRENT_YEAR } from './components/YearPicker';
 import { loadUserId, saveUserId } from './lib/users';
 
 function formatDate(isoDate: string): string {
@@ -27,14 +28,17 @@ export default function App() {
   const [orderPage, setOrderPage] = useState<OrderPage | null>(null);
   const [page, setPage] = useState(0);
 
+  const [year, setYear] = useState(CURRENT_YEAR);
+  const isHistorical = year !== CURRENT_YEAR;
+
   const load = useCallback(() => {
     setLoading(true);
     setError(null);
-    fetchYieldCurve()
+    fetchYieldCurve(year)
       .then(setCurve)
       .catch((e: Error) => setError(e.message))
       .finally(() => setLoading(false));
-  }, []);
+  }, [year]);
 
   useEffect(load, [load]);
 
@@ -68,10 +72,13 @@ export default function App() {
             <h1 className="text-2xl font-semibold text-[var(--text-primary)]">Liquidity Manager</h1>
             <p className="mt-1 text-sm text-[var(--text-secondary)]">
               US Treasury par yield curve
-              {curve && ` — as of ${formatDate(curve.date)}`}
+              {curve && ` — ${isHistorical ? 'closing curve' : 'as of'} ${formatDate(curve.date)}`}
             </p>
           </div>
-          <UserPicker userId={userId} onChange={handleUserChange} />
+          <div className="flex items-end gap-4">
+            <YearPicker year={year} onChange={setYear} />
+            <UserPicker userId={userId} onChange={handleUserChange} />
+          </div>
         </header>
 
         {loading && (
@@ -99,6 +106,7 @@ export default function App() {
               userId={userId}
               points={curve.points}
               onPlaced={handlePlaced}
+              historicalYear={isHistorical ? year : undefined}
             />
             {orderPage && <OrderHistory page={orderPage} onPageChange={setPage} />}
             <div>

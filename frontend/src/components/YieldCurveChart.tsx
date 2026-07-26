@@ -16,8 +16,11 @@ import { shortTenor } from '../lib/tenor';
 function yDomain(points: YieldPoint[]): [number, number] {
   const rates = points.map((point) => point.ratePercent);
   const padding = 0.15;
+  const lowest = Math.min(...rates);
+  const floor = Math.floor((lowest - padding) * 10) / 10;
+
   return [
-    Math.floor((Math.min(...rates) - padding) * 10) / 10,
+    lowest >= 0 ? Math.max(0, floor) : floor,
     Math.ceil((Math.max(...rates) + padding) * 10) / 10,
   ];
 }

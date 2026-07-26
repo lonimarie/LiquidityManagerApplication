@@ -8,9 +8,10 @@ interface Props {
   userId: string;
   points: YieldPoint[];
   onPlaced: (order: Order) => void;
+  historicalYear?: number;
 }
 
-export default function OrderForm({ userId, points, onPlaced }: Props) {
+export default function OrderForm({ userId, points, onPlaced, historicalYear }: Props) {
   const [termLabel, setTermLabel] = useState(points[0]?.label ?? '');
   const [amount, setAmount] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -19,7 +20,10 @@ export default function OrderForm({ userId, points, onPlaced }: Props) {
 
   const selected = points.find((point) => point.label === termLabel);
   const parsedAmount = Number(amount);
-  const canSubmit = !submitting && termLabel !== '' && amount !== '' && parsedAmount > 0;
+
+  const isHistorical = historicalYear !== undefined;
+  const canSubmit =
+    !submitting && !isHistorical && termLabel !== '' && amount !== '' && parsedAmount > 0;
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -32,7 +36,6 @@ export default function OrderForm({ userId, points, onPlaced }: Props) {
     setConfirmation(null);
 
     try {
-      // The server resolves the rate, so the created order is the authoritative record.
       const order = await placeOrder(userId, { termLabel, amount: parsedAmount });
       onPlaced(order);
       setConfirmation(
@@ -59,8 +62,9 @@ export default function OrderForm({ userId, points, onPlaced }: Props) {
           <select
             id="term"
             value={termLabel}
+            disabled={isHistorical}
             onChange={(event) => setTermLabel(event.target.value)}
-            className="rounded-md border border-[var(--grid-line)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)]"
+            className="rounded-md border border-[var(--grid-line)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)] disabled:opacity-40"
           >
             {points.map((point) => (
               <option key={point.label} value={point.label}>
@@ -82,6 +86,7 @@ export default function OrderForm({ userId, points, onPlaced }: Props) {
             step="0.01"
             placeholder="1,000,000.00"
             value={amount}
+            disabled={isHistorical}
             onChange={(event) => setAmount(event.target.value)}
             aria-invalid={Boolean(error?.fieldErrors.amount)}
             className="w-full rounded-md border border-[var(--grid-line)] bg-[var(--surface-1)] px-3 py-2 text-sm tabular-nums text-[var(--text-primary)] sm:w-48"
@@ -97,11 +102,18 @@ export default function OrderForm({ userId, points, onPlaced }: Props) {
         </button>
       </form>
 
-      {selected && (
+      {isHistorical ? (
         <p className="mt-2 text-xs text-[var(--text-secondary)]">
-          Booking at the current published rate for {shortTenor(selected.label)}:{' '}
-          {formatRate(selected.ratePercent)}
+          Viewing the {historicalYear} closing curve. Switch the curve year back to the latest to
+          place an order — orders always book at the current published rate.
         </p>
+      ) : (
+        selected && (
+          <p className="mt-2 text-xs text-[var(--text-secondary)]">
+            Booking at the current published rate for {shortTenor(selected.label)}:{' '}
+            {formatRate(selected.ratePercent)}
+          </p>
+        )
       )}
 
       {error && (

@@ -3,8 +3,9 @@ package com.project.liquidity.yields;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,9 +23,12 @@ public class TreasuryYieldClient {
 
     private static final Duration CACHE_TTL = Duration.ofMinutes(15);
 
+    /** Treasury's daily curve series begins in 1990. */
+    public static final int EARLIEST_YEAR = 1990;
+
     private final RestClient restClient;
     private final YieldCurveCsvParser parser;
-    private final AtomicReference<CachedCurve> cache = new AtomicReference<>();
+    private final Map<Integer, CachedCurve> cache = new ConcurrentHashMap<>();
 
     private record CachedCurve(YieldCurve curve, Instant fetchedAt) {
         boolean isFresh() {
@@ -38,19 +42,32 @@ public class TreasuryYieldClient {
     }
 
     public YieldCurve fetchLatestCurve() {
-        CachedCurve cached = cache.get();
-        if (cached != null && cached.isFresh()) {
+        return fetchCurve(LocalDate.now().getYear());
+    }
+
+    /**
+     * The last curve published in the given year -- the newest row in a past year's file is its
+     * final business day, so this is that year's closing curve.
+     */
+    public YieldCurve fetchCurve(int year) {
+        int currentYear = LocalDate.now().getYear();
+        int safeYear = Math.clamp(year, EARLIEST_YEAR, currentYear);
+        boolean isCompletedYear = safeYear < currentYear;
+
+        CachedCurve cached = cache.get(safeYear);
+        if (cached != null && (isCompletedYear || cached.isFresh())) {
             return cached.curve();
         }
 
-        int year = LocalDate.now().getYear();
+        Optional<YieldCurve> fetched = fetchYear(safeYear);
+        if (fetched.isEmpty() && !isCompletedYear) {
+            fetched = fetchYear(safeYear - 1);
+        }
 
-        YieldCurve curve = fetchYear(year)
-                .or(() -> fetchYear(year - 1))
-                .orElseThrow(() -> new TreasuryUnavailableException(
-                        "Treasury published no yield curve data for " + year + " or " + (year - 1)));
+        YieldCurve curve = fetched.orElseThrow(() -> new TreasuryUnavailableException(
+                "Treasury published no yield curve data for " + safeYear));
 
-        cache.set(new CachedCurve(curve, Instant.now()));
+        cache.put(safeYear, new CachedCurve(curve, Instant.now()));
         return curve;
     }
 

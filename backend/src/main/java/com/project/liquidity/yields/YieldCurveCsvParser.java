@@ -18,9 +18,7 @@ public class YieldCurveCsvParser {
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
-    /**
-     * Matches tenor column headers such as "1 Mo", "1.5 Month", "10 Yr".
-     */
+
     private static final Pattern TENOR = Pattern.compile("(\\d+(?:\\.\\d+)?)\\s*(Mo|Month|Yr|Year)s?",
             Pattern.CASE_INSENSITIVE);
 
