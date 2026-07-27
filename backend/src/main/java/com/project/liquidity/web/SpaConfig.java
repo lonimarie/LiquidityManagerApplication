@@ -26,7 +26,7 @@ public class SpaConfig implements WebMvcConfigurer {
                 .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS).immutable());
 
         registry.addResourceHandler("/**")
-                .addResourceLocations(STATIC_ROOT).
+                .addResourceLocations(STATIC_ROOT)
                 .setCacheControl(CacheControl.noCache())
                 .resourceChain(true)
                 .addResolver(new SpaResourceResolver());
