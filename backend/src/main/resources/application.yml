@@ -13,7 +13,12 @@ spring:
     open-in-view: false
 
 server:
-  port: 8080
+  port: ${PORT:8080}
+
+  compression:
+    enabled: true
+    mime-types: text/html,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 1024
 
 treasury:
   base-url: https://home.treasury.gov/resource-center/data-chart-center/interest-rates

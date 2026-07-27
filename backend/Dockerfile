@@ -1,5 +1,3 @@
-# Build stage: compile the Spring Boot jar with Gradle inside the image so the
-# only tool a reviewer needs on their machine is Docker.
 FROM gradle:8.14-jdk21 AS build
 WORKDIR /workspace
 
@@ -11,7 +9,6 @@ RUN gradle :backend:dependencies --no-daemon > /dev/null 2>&1 || true
 COPY backend/src backend/src
 RUN gradle :backend:bootJar --no-daemon
 
-# Runtime stage: JRE only, no Gradle or source.
 FROM eclipse-temurin:21-jre-alpine AS runtime
 WORKDIR /app
 
